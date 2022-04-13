@@ -1,0 +1,9 @@
+int x = 1;
+boolean y = true;
+string s = "ola";
+int a = x;
+list l = [1,2,3,4];
+int elem = l[2];
+tuple t = ("ola","xau");
+set st = {2,4,6};
+dict d = {"tiago": 10, "pedras": 85};
