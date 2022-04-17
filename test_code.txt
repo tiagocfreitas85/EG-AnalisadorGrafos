@@ -1,9 +1,20 @@
-list l = [1,2,3,4,5];
-int x;
-dict d = {"tiago": 1};
+int y = 1;
+int x = 2;
+boolean x = true;
+list l = [1,2,3,4];
+list one = [1];
+list null = [];
+dict d = {"tiago": 1, "antonio": 2};
+dict d1 = {"tiago": 1};
+dict d2 = {};
+tuple t = (1,2);
+set s = {1,2,3,4,5};
+string e = "ola";
 -----------------------
 write(x);
 x = l[0];
+x = z;
+read(a);
 
 
 
