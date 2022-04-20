@@ -2,67 +2,18 @@ from lark import Lark
 from lark.visitors import Interpreter
 from aux import *
 
-
 class LPIS2_Interpreter(Interpreter): 
-    htmli = '''
-<!DOCTYPE html>
-<html>
-<style>
-    .error {
-        position: relative;
-        display: inline-block;
-        border-bottom: 1px dotted black;
-        color: red;
-}
-    .code {
-        position: relative;
-        display: inline-block;
-}
-    .error .errortext {
-        visibility: hidden;
-        width: 200px;
-        background-color: #555;
-        color: #fff;
-        text-align: center;
-        border-radius: 6px;
-        padding: 5px 0;
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-        margin-left: -40px;
-        opacity: 0;
-        transition: opacity 0.3s;
-}
-    .error .errortext::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 20%;
-        margin-left: -5px;
-        border-width: 5px;
-border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
-    .error:hover .errortext {
-        visibility: visible;
-        opacity: 1;
-} </style>
-<body>
-    <h2>Análise de código</h2>
-    <pre><code>
-''' 
-
     def __init__(self):
         self.regs = Registers()
-        self.instrs = {'atrib': 0, 'read': 0, 'write': 0, 'if': 0, 'if_else': 0, 'for': 0, 'while': 0, 'repeat': 0}
+        self.instrs = {'atrib': 0, 'read': 0, 'write': 0, 'if': 0, 'for': 0, 'while': 0, 'repeat': 0}
         self.ifs = {}
         self.level = 0
+        self.htmli = open('html_begin.html').read()
         self.output = {}
 
     def start(self,tree):
         self.visit(tree.children[0])
-        self.htmli += '<p class="code">' + tree.children[1].value + '</p>'
+        self.htmli += '<p class="code">' + tree.children[1].value + '</p>\n'
         self.visit_children(tree.children[2])
         self.output['regs'] = self.regs.to_string()
         self.output['instrs'] = self.instrs
@@ -73,7 +24,6 @@ border-style: solid;
     def decls(self,tree):
         self.visit_children(tree)
           
-
 
     def decl(self,tree):
         self.visit_children(tree)
@@ -89,17 +39,22 @@ border-style: solid;
                 else:
                     vrf = value_verifier(value,self.regs)
                     if vrf == "A":
-                        print("Erro: Variável '" + value + "' vazia")
+                        error = "Erro: Variável '" + value + "' vazia"
+                        print(error)
                     elif vrf == "B":
-                        print("Erro: Variável '" + value + "' inexsitente")
+                        error = "Erro: Variável '" + value + "' inexsitente"
+                        print(error)
                     elif vrf == "C":
                         vl = value.split('[')[0]
-                        print("Erro: '" + vl + "' não possui esse índice")
+                        error = "Erro: '" + vl + "' não possui esse índice"
+                        print(error)
                     elif vrf == "D":
                         vl = value.split('[')[0]
-                        print("Erro: '" + vl + "' não possui essa entrada")
+                        error = "Erro: '" + vl + "' não possui essa entrada"
+                        print(error)
                     elif type_verifier(var,vrf,self.regs) == 0:
-                        print("Erro: '" + value + "' não é do tipo 'int'")
+                        error = "Erro: '" + value + "' não é do tipo 'int'"
+                        print(error)
                     else:
                         self.regs.int[var] = value
             else:
@@ -110,10 +65,6 @@ border-style: solid;
             value = None
             self.regs.int[var] = value
         
-         
-            
-            
-
 
     def decl_boolean(self,tree):
         var = tree.children[1].value
@@ -294,7 +245,6 @@ border-style: solid;
         self.visit_children(tree)
 
     def instr(self,tree):
-        if self.level > 0: self.inside += 1
         self.visit_children(tree)
     
     def instr_atrib(self,tree):
@@ -306,7 +256,10 @@ border-style: solid;
             flag = 0
         
         vrf1 = var_verifier(var,self.regs)
-        vrf2 = value_verifier(value,self.regs)
+        if flag:
+            vrf2 = value_verifier(value,self.regs)
+        else: vrf2 = value
+        
 
         if vrf1 == 3:
             print("Erro: Variável '" + var + "' inexsitente")
@@ -327,8 +280,13 @@ border-style: solid;
             print("Erro: '" + vl + "' não possui essa entrada")
         else:
             if type_verifier(var,vrf2,self.regs) == 0:
-                print("Erro: '" + var + "' e '" + value + "' são de tipos diferentes")
-        self.htmli += '\n<p class="code">' + var +' = ' + value + tree.children[2] + '</p>'
+                print("Erro: '" + var + "' e '" + str(value) + "' são de tipos diferentes")
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += var + ' = ' + str(value) + tree.children[2] + '</p>\n'
 
     def instr_read(self,tree):
         self.instrs['read'] += 1
@@ -336,55 +294,128 @@ border-style: solid;
         vrf = var_verifier(var,self.regs)
         if vrf == 3:
             print("Erro: Variável '" + var + "' inexistente")
-        else:
-            self.htmli += '\n<p class="code">' + tree.children[0] + tree.children[1] + var + tree.children[3] + tree.children[4] + '</p>'
+        
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + var + tree.children[3] + tree.children[4] + '</p>\n'
 
     def instr_write(self,tree):
         self.instrs['write'] += 1
         var = self.visit(tree.children[2])
-        vrf = var_verifier(var,self.regs)
-        if vrf == 3:
-            print("Erro: Variável '" + var + "' inexistente")
-        else:
-            self.htmli += '\n<p class="code">' + tree.children[0] + tree.children[1] + str(var) + tree.children[3] + tree.children[4] + '</p>'
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + str(var) + tree.children[3] + tree.children[4] + '</p>\n'
 
     def instr_if(self,tree):
         self.instrs['if'] += 1
-        if len(tree.children) == 7:
-            self.level += 1
-            self.visit(tree.children[5])
-            self.level -= 1
-        else: self.visit(tree.children[4])
+        var = self.visit(tree.children[2])
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + str(var) + tree.children[3] + tree.children[4] + '</p>\n'
+        self.level += 1
+        self.visit_children(tree.children[5])
+        self.level -= 1
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[6] + '</p>\n'
+        
 
     def instr_if_else(self,tree):
-        self.instrs['if_else'] += 1
-        if len(tree.children) == 5:
-            self.level += 1
-            self.visit(tree.children[3])
-            self.level -= 1
-        else: self.visit(tree.children[2])
+        self.visit(tree.children[0])
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[1] + tree.children[2] + '</p>\n'
+        self.level += 1
+        self.visit_children(tree.children[3])
+        self.level -= 1
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[4] + '</p>\n'
+
 
     def instr_for(self,tree):
         self.instrs['for'] += 1
-        if len(tree.children) == 8:
-            self.level += 1
-            self.visit(tree.children[6])
-            self.level -= 1
-        else: self.visit(tree.children[4])
+        var = self.visit(tree.children[2])
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + var + tree.children[3] + tree.children[4] + '</p>\n'
+        self.level += 1
+        self.visit_children(tree.children[5])
+        self.level -= 1
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[6] + '</p>\n'
 
     def instr_while(self,tree):
         self.instrs['while'] += 1
-        if len(tree.children) == 7:
-            self.level += 1
-            self.visit(tree.children[5])
-            self.level -= 1
-        else: self.visit(tree.children[4])
+        var = self.visit(tree.children[2])
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + str(var) + tree.children[3] + tree.children[4] + '</p>\n'
+        self.level += 1
+        self.visit_children(tree.children[5])
+        self.level -= 1
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[6] + '</p>\n'
 
     def instr_repeat(self,tree):
         self.instrs['repeat'] += 1
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + '</p>\n'
         self.level += 1
-        self.visit(tree.children[2])
+        self.visit_children(tree.children[2])
+        self.visit(tree.children[3])
         self.level -= 1
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[4] + '</p>\n'
+
+    def until(self,tree):
+        var = self.visit(tree.children[2])
+        i = 0
+        self.htmli += '<p class="code">'
+        while i != self.level:
+            self.htmli += '\t'
+            i += 1
+        self.htmli += tree.children[0] + tree.children[1] + str(var) + tree.children[3] + tree.children[4] + '</p>\n'
 
     def logic(self,tree):
         return self.visit_children(tree)[0]
@@ -433,5 +464,5 @@ for key in data:
         print(key)
         for t in data[key]:
             print ("\t" + t + ": " + str(data[key][t]))
-    else:
+    elif key != "html":
         print(key + ": " + str(data[key]))

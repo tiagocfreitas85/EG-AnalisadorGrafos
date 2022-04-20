@@ -38,14 +38,10 @@ instr : instr_atrib
 instr_atrib : (ID|ELEM) decl_atrib PV
 instr_read : READ PE (ID|ELEM) PD PV
 instr_write : WRITE PE logic PD PV
-instr_if_else : instr_if ELSE instr
-              | instr_if ELSE CE instrs CD
-instr_if : IF PE logic PD (instr_atrib|instr_read|instr_write)
-         | IF PE logic PD CE instrs CD
-instr_for : FOR PE (decl_int|decl_string) PD (instr_atrib|instr_read|instr_write)
-          | FOR PE PE (decl_int|decl_string) PD CE instrs CD
-instr_while : WHILE PE logic PD (instr_atrib|instr_read|instr_write)
-            | WHILE PE logic PD CE instrs CD
+instr_if_else : instr_if ELSE CE instrs CD
+instr_if : IF PE logic PD CE instrs CD
+instr_for : FOR PE (decl_int|decl_string) PD CE instrs CD
+instr_while : WHILE PE logic PD CE instrs CD
 instr_repeat : REPEAT CE instrs until CD
 until : UNTIL PE logic PD PV
 
