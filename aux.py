@@ -37,6 +37,7 @@ def var_verifier(var,regs):
     
     for i in regs.boolean:
         if var == i:
+            
             if regs.boolean[i] == None:
                 return 1
             else : return 2
@@ -124,7 +125,7 @@ def value_verifier(value,regs):
                 value = regs.string[i] 
                 return value
     
-    if not(isinstance(value,int)) and '[' in value:
+    if not(value.isdigit()) and '[' in value:
         v = value.split('[')[0]
         index = value.split('[')[1].split(']')[0]
         flag = 1
@@ -195,7 +196,7 @@ def value_verifier(value,regs):
 def type_verifier(var,value,regs):
     for i in regs.int:
         if var == i:
-            if isinstance(value,int): return 1
+            if value.isdigit(): return 1
             else: return 0
     for i in regs.boolean:
         if var == i:
@@ -205,3 +206,6 @@ def type_verifier(var,value,regs):
         if var == i:
             if ('"' in value): return 1
             else: return 0
+
+def error_html(error,value):
+    return '<div class="error">' + value + '<span class="errortext">' + error + '</span></div>'

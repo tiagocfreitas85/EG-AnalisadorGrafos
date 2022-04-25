@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        
+            * {
+                font-size: x-large;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            h1 {
+                font-size: xx-large;
+            }
+
+            .error {
+                position: relative;
+                display: inline-block;
+                color: red;
+                font-family:monospace;
+        }
+            .code {
+                position: relative;
+                display: inline-block;
+                margin-bottom: 0.5%;
+                font-family:monospace;
+                
+        }
+            .error .errortext {
+                visibility: hidden;
+                width: auto;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                border-radius: 2px;
+                padding: 10px 0;
+                position: absolute;
+                bottom: 125%;
+                left: 50%;
+                margin: auto;
+                opacity: 0;
+                transition: opacity 0.3s;
+                
+        }
+            
+            .error:hover .errortext {
+                visibility: visible;
+                opacity: 1;
+        }
+    </style>
+    <body>
+        <h1>Código</h1>
+        <pre><code><div class="code">int x = 2;</div>
+<div class="code">-----------------------</div>
+<div class="code">if(true){ //aninhado</div>
+<div class="code">	if(false){</div>
+<div class="code">		read(x);</div>
+<div class="code">		if(true){</div>
+<div class="code">			x = 3;</div>
+<div class="code">		}</div>
+<div class="code">	}</div>
+<div class="code">}</div>
+<div class="code">if(1){ //aninhado</div>
+<div class="code">	if(2){</div>
+<div class="code">		x = 1;</div>
+<div class="code">	}</div>
+<div class="code">}</div>
+
+</code></pre>
+
+        <h1>Registos</h1><p>
+            <li>	int: {'x': '2'}</li>
+            <li>	boolean: {}</li>
+            <li>	string: {}</li>
+            <li>	list: {}</li>
+            <li>	tuple: {}</li>
+            <li>	set: {}</li>
+            <li>	dict: {}</li></p>
+        <h1>Variáveis usadas</h1><p>
+        {'x'}</p>
+        <h1>Intruções</h1><p>
+        {'atrib': 2, 'read': 1, 'write': 0, 'if': 5, 'if_else': 0, 'for': 0, 'while': 0, 'repeat': 0}</p>
+        <h1>Código (c/sugestões)</h1>
+        <pre><code><div class="code">int x = 2;</div>
+<div class="code">-----------------------</div>
+<div class="code">if(true && false){</div>
+<div class="code">	read(x);</div>
+<div class="code">	if(true){</div>
+<div class="code">		x = 3;</div>
+<div class="code">	}</div>
+<div class="code">}</div>
+<div class="code">if(1 && 2){</div>
+<div class="code">	x = 1;</div>
+<div class="code">}</div>
+
+        </code></pre>
