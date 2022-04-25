@@ -62,7 +62,7 @@
 <div class="code">dict d = {"um": 1,"dois": 2};</div>
 <div class="code">tuple t = (4,5,6);</div>
 <div class="code">-----------------------</div>
-<div class="code">x = t[1];</div>
+<div class="code"><div class="error">t[1]<span class="errortext">tuplos são imutáveis</span></div> = x;</div>
 <div class="code"><div class="error">x = b<span class="errortext">'x' e 'b' são de tipos diferentes</span></div>;</div>
 <div class="code">read(<div class="error">g<span class="errortext">variável 'g' inexistente</span></div>);</div>
 <div class="code">write(x);</div>
@@ -108,7 +108,7 @@
             <li>	set: {}</li>
             <li>	dict: {'d': {'"um"': '1', '"dois"': '2'}}</li></p>
         <h1>Variáveis usadas</h1><p>
-        {'b', 'l[0]', 'x', 'y'}</p>
+        {'b', 'l[0]', 'y', 'x'}</p>
         <h1>Intruções</h1><p>
         {'atrib': 8, 'read': 2, 'write': 2, 'if': 6, 'if_else': 1, 'for': 1, 'while': 1, 'repeat': 1}</p>
         <p><b>Total: </b>22</p>
@@ -128,7 +128,7 @@
 <div class="code">dict d = {"um": 1,"dois": 2};</div>
 <div class="code">tuple t = (4,5,6);</div>
 <div class="code">-----------------------</div>
-<div class="code">x = t[1];</div>
+<div class="code">t[1] = x;</div>
 <div class="code">x = b;</div>
 <div class="code">read(g);</div>
 <div class="code">write(x);</div>
