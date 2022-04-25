@@ -8,7 +8,7 @@ def add_suggestions(html):
     print(soup)
     for d in soup.code:
         if '\n' not in d:
-            for x in d.find_all("div", {"class": "error"}):
+            for x in d.find_all("span", {"class": "errortext"}):
                 x.extract()
             print(d)
             res.append(d.get_text())
