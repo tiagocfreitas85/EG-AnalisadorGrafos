@@ -1,15 +1,50 @@
 int x = 2;
+int y = 3;
+int w;
+int z = a;
+int g = w;
+boolean b = true;
+boolean x = false;
+boolean c = "true";
+string s = 0;
+list l = [1,2,3];
+int u = l[5];
+dict d = {"um": 1,"dois": 2};
+tuple t = (4,5,6);
 -----------------------
+x = t[1];
+x = b;
+read(g);
+write(x);
+for(i = 0){
+    if (x == 1){
+        h = 1;
+    }
+    else{
+        l[0] = 2;
+        if(b){
+            write(y);
+        }
+    }
+}
+while(1){
+    y = y + 3;
+}
+repeat {
+    x = x - 1;
+    until(false && (x > 0));
+}
+
 if (true){
     if (false){
         read(x);
         if (true){
-            x =3;
+            x = 3;
         }
     }
 }
-if (1){
-    if(2){
+if (x){
+    if(y){
         x = 1;
     }
 }

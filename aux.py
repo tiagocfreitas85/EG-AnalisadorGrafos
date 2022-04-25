@@ -155,7 +155,7 @@ def value_verifier(value,regs):
                     return value
         else: 
             if v == i:
-                if len(regs.list[i]) > int(index):
+                if len(regs.tuple[i]) > int(index):
                     value = regs.tuple[i][int(index)] 
                     return value
                 else: return "C"

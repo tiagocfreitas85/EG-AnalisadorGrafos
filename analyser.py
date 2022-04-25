@@ -8,9 +8,9 @@ class LPIS2_Interpreter(Interpreter):
         self.regs = Registers()
         self.used = set()
         self.instrs = {'atrib': 0, 'read': 0, 'write': 0, 'if': 0, 'if_else': 0, 'for': 0, 'while': 0, 'repeat': 0}
-        self.ifs = {}
         self.current = ""
         self.level = 0
+        self.inside = 0
         self.htmli = ""
         self.output = {}
 
@@ -21,7 +21,7 @@ class LPIS2_Interpreter(Interpreter):
         self.output['regs'] = self.regs.to_string()
         self.output['used'] = self.used
         self.output['instrs'] = self.instrs
-        self.output['ifs'] = self.ifs
+        self.output['inside'] = self.inside
         self.output['html'] = self.htmli
         return(self.output)
 
@@ -98,7 +98,7 @@ class LPIS2_Interpreter(Interpreter):
         if len(tree.children) == 3:
             value = self.visit(tree.children[2])
             if not(value == 'true' or value == 'false' or " " in value):
-                if isinstance(value,int) or '"' in value:
+                if value.isdigit() or '"' in value:
                     error = str(value) + " não é do tipo 'boolean'"
                     print(error)
                 else:
@@ -150,7 +150,7 @@ class LPIS2_Interpreter(Interpreter):
         if len(tree.children) == 3:
             value = self.visit(tree.children[2])
             if not('"' in str(value)):
-                if isinstance(value,int) or value == 'true' or value == 'false':
+                if value.isdigit() or value == 'true' or value == 'false':
                     error = "'" + str(value) + "' não é do tipo 'string'"
                     print(error)
                 else:
@@ -331,6 +331,8 @@ class LPIS2_Interpreter(Interpreter):
         val_error = None
         error = None
         self.instrs['atrib'] += 1
+        if self.level > 0:
+            self.inside += 1
         var = tree.children[0].value
         value = self.visit(tree.children[1])
         if value.isdigit() or ('[' not in value and '"' in value) or value == 'true' or value == 'false' or " " in value:
@@ -393,6 +395,8 @@ class LPIS2_Interpreter(Interpreter):
 
     def instr_read(self,tree):
         self.instrs['read'] += 1
+        if self.level > 0:
+            self.inside += 1
         error = None
         var = tree.children[2].value
         vrf = var_verifier(var,self.regs)
@@ -413,6 +417,8 @@ class LPIS2_Interpreter(Interpreter):
     
     def instr_write(self,tree):
         self.instrs['write'] += 1
+        if self.level > 0:
+            self.inside += 1
         self.visit(tree.children[2])
         var = self.current
         self.current = ""
@@ -430,6 +436,8 @@ class LPIS2_Interpreter(Interpreter):
 
     def instr_if(self,tree):
         self.instrs['if'] += 1
+        if self.level > 0:
+            self.inside += 1
         self.visit(tree.children[2])
         var = self.current
         self.current = ""
@@ -458,6 +466,8 @@ class LPIS2_Interpreter(Interpreter):
 
     def instr_if_else(self,tree):
         self.instrs['if_else'] += 1
+        if self.level > 0:
+            self.inside += 1
         self.visit(tree.children[2])
         var = self.current
         self.current = ""
@@ -491,25 +501,31 @@ class LPIS2_Interpreter(Interpreter):
 
     def instr_for(self,tree):
         self.instrs['for'] += 1
-        var = self.visit(tree.children[2])
+        if self.level > 0:
+            self.inside += 1
+        self.visit(tree.children[4])
+        var = self.current
+        self.current = ""
         i = 0
         self.htmli += '<div class="code">'
         while i != self.level:
             self.htmli += '\t'
             i += 1
-        self.htmli += tree.children[0] + tree.children[1] + var + tree.children[3] + tree.children[4] + '</div>\n'
+        self.htmli += tree.children[0] + tree.children[1] + tree.children[2] + tree.children[3] + str(var) + tree.children[5] + tree.children[6] + '</div>\n'
         self.level += 1
-        self.visit_children(tree.children[5])
+        self.visit_children(tree.children[7])
         self.level -= 1
         i = 0
         self.htmli += '<div class="code">'
         while i != self.level:
             self.htmli += '\t'
             i += 1
-        self.htmli += tree.children[6] + '</div>\n'
+        self.htmli += tree.children[8] + '</div>\n'
 
     def instr_while(self,tree):
         self.instrs['while'] += 1
+        if self.level > 0:
+            self.inside += 1
         self.visit(tree.children[2])
         var = self.current
         self.current = ""
@@ -534,6 +550,8 @@ class LPIS2_Interpreter(Interpreter):
 
     def instr_repeat(self,tree):
         self.instrs['repeat'] += 1
+        if self.level > 0:
+            self.inside += 1
         i = 0
         self.htmli += '<div class="code">'
         while i != self.level:
@@ -638,12 +656,20 @@ for key in data:
         <h1>Intruções</h1><p>
         ''' 
         html += str(data[key]) + "</p>"
+        total = sum(data[key].values())
+        html += '''
+        <p><b>Total: </b>''' + str(total) + '</p>'
+        print("total_instrs" + str(total))
     elif key == "used":
         print(key + ": " + str(data[key]))
         html += '''
         <h1>Variáveis usadas</h1><p>
         ''' 
         html += str(data[key]) + "</p>"
+    elif key == "inside":
+        print(key + ": " + str(data[key]))
+        html += '''
+        <p><b>Total dentro de outras estruturas: </b>''' + str(data[key]) + '</p>'
 
 f = open("page.html",'w',encoding = 'utf-8')
 

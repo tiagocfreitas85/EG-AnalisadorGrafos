@@ -5,8 +5,12 @@ import re
 def add_suggestions(html):
     soup = BeautifulSoup(html,"html.parser")
     res = []
+    print(soup)
     for d in soup.code:
         if '\n' not in d:
+            for x in d.find_all("div", {"class": "error"}):
+                x.extract()
+            print(d)
             res.append(d.get_text())
     i = 0
     #print(res)
