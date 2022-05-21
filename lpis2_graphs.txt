@@ -1,0 +1,133 @@
+start : decls SEPARATOR instrs
+
+decls : (decl PV)+
+decl : decl_int
+     | decl_boolean
+     | decl_string
+     | decl_list
+     | decl_tuple
+     | decl_set
+     | decl_dict
+
+decl_int : NAME_INT ID decl_atrib?
+decl_boolean : NAME_BOOLEAN ID decl_atrib?
+decl_string : NAME_STRING ID decl_atrib?
+decl_list : NAME_LIST ID decl_atrib_list?
+decl_tuple : NAME_TUPLE ID decl_atrib_tuple?
+decl_set : NAME_SET ID decl_atrib_set?
+decl_dict : NAME_DICT ID decl_atrib_dict?
+
+decl_atrib : EQUAL logic
+decl_atrib_list : EQUAL PRE logic? (VIR logic)* PRD
+decl_atrib_tuple : EQUAL PE logic? (VIR logic)* PD
+decl_atrib_set : EQUAL CE logic? (VIR logic)* CD
+decl_atrib_dict : EQUAL CE elem_dict? (VIR elem_dict)* CD
+
+elem_dict : STRING DP logic
+
+instrs : instr+
+instr : instr_atrib
+      | instr_read
+      | instr_write
+      | instr_if_else
+      | instr_if
+      | instr_for
+      | instr_while
+      | instr_repeat
+
+instr_atrib : (ID|ELEM) decl_atrib PV
+instr_read : READ PE (ID|ELEM) PD PV
+instr_write : WRITE PE logic PD PV
+instr_if_else : IF PE logic PD CE instrs CD ELSE CE instrs CD
+instr_if : IF PE logic PD CE instrs CD
+instr_for : FOR PE (ID|ELEM) decl_atrib PV logic PV (ID|ELEM) decl_atrib PD CE instrs CD 
+instr_while : WHILE PE logic PD CE instrs CD
+instr_repeat : REPEAT CE instrs until CD
+until : UNTIL PE logic PD PV
+
+logic : logic AND logic_not
+      | logic OR logic_not
+      | logic_not
+
+logic_not : NOT logic
+          | relac
+
+relac : logic EQ exp 
+      | logic DIFF exp
+      | logic GRT exp
+      | logic GEQ exp
+      | logic LWR exp
+      | logic LEQ exp
+      | exp
+
+exp : exp ADD termo
+    | exp SUB termo 
+    | termo
+
+termo : exp MUL termo
+      | exp DIV termo
+      | exp MOD termo
+      | factor
+
+factor : PE logic PD
+       | INT
+       | BOOLEAN
+       | STRING
+       | ID
+       | ELEM
+
+SEPARATOR : ("-")+
+PE : "("
+PD : ")"
+PRE : "["
+PRD : "]"
+CE : "{"
+CD : "}"
+EQUAL : "="
+VIR : ","
+PV : ";"
+DP : ":"
+READ : "read"
+WRITE : "write"
+IF : "if"
+THEN : "then"
+ELSE : "else"
+FOR : "for"
+IN : "in"
+WHILE : "while"
+REPEAT : "repeat"
+UNTIL : "until"
+AND : "&&"
+OR : "||"
+NOT : "!"
+EQ : "=="
+DIFF : "!=" 
+GRT : ">" 
+GEQ : ">=" 
+LWR : "<" 
+LEQ : "<="
+ADD : "+"
+SUB : "-" 
+MUL : "*" 
+DIV : "/"
+MOD : "%"
+
+NAME_INT : "int"
+NAME_BOOLEAN : "boolean"
+NAME_STRING : "string"
+NAME_LIST : "list"
+NAME_TUPLE : "tuple"
+NAME_SET : "set"
+NAME_DICT : "dict"
+
+ID : CNAME
+BOOLEAN : "true" | "false"
+STRING : ESCAPED_STRING
+ELEM : ID "[" (INT|STRING) "]"
+
+%import common.INT
+%import common.WS
+%import common.CNAME
+%import common.ESCAPED_STRING
+%import common.LCASE_LETTER
+%ignore WS
