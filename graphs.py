@@ -7,6 +7,7 @@ class LPIS2_Interpreter(Interpreter):
         self.current = ""
         self.node = ""
         self.replace = 0
+        self.true = 0
         self.then_else = 0
         self.cfg = ""
         self.sdg = ""
@@ -201,32 +202,59 @@ class LPIS2_Interpreter(Interpreter):
         value = self.visit(tree.children[1])
         node = '"' + var + ' = ' + value + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += node + '\n\t' + node + ' -> '
         self.sdg += node
-        if self.then_else == 1:
+        if self.true == 1: 
+            self.cfg += node + '[ label= "true" ];\n\t' + node + ' -> '
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];\n\t' + node + ' -> '
             self.sdg += ' [ label="then" ];'
             self.then_else = 0
         elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];\n\t' + node + ' -> '
             self.sdg += ' [ label="else" ];'
             self.then_else = 0
+        else: 
+            self.cfg += node + '\n\t' + node + ' -> '
+        
 
     def instr_read(self,tree):
         var = tree.children[2].value
         var = var.replace('"','\\"')
         node = '"' + tree.children[0] + tree.children[1] + var + tree.children[3] + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += node + '\n\t' + node + ' -> '
         self.sdg += node
-        if self.then_else == 1:
+        if self.true == 1: 
+            self.cfg += node + '[ label= "true" ];\n\t' + node + ' -> '
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];\n\t' + node + ' -> '
             self.sdg += ' [ label="then" ];'
             self.then_else = 0
         elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];\n\t' + node + ' -> '
             self.sdg += ' [ label="else" ];'
             self.then_else = 0
+        else: 
+            self.cfg += node + '\n\t' + node + ' -> '
     
     def instr_write(self,tree):
         self.visit(tree.children[2])
@@ -234,16 +262,29 @@ class LPIS2_Interpreter(Interpreter):
         self.current = ""
         node = '"' + tree.children[0] + tree.children[1] + var + tree.children[3] + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
-            self.repalce = 0
-        self.cfg += node + '\n\t' + node + ' -> '
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            self.replace = 0
         self.sdg += node
-        if self.then_else == 1:
+        if self.true == 1: 
+            self.cfg += node + '[ label= "true" ];\n\t' + node + ' -> '
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];\n\t' + node + ' -> '
             self.sdg += ' [ label="then" ];'
             self.then_else = 0
         elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];\n\t' + node + ' -> '
             self.sdg += ' [ label="else" ];'
             self.then_else = 0
+        else: 
+            self.cfg += node + '\n\t' + node + ' -> '
 
     def instr_if(self,tree):
         self.visit(tree.children[2])
@@ -251,19 +292,34 @@ class LPIS2_Interpreter(Interpreter):
         self.current = ""
         node = '"' + tree.children[0] + tree.children[1] + str(cond) + tree.children[3] + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += node + '\n\t' + node + '[shape=diamond];\n\t' + node + ' -> '
         self.sdg += node
-        if self.then_else == 1:
+        if self.true == 1: 
+            self.cfg += node + '[ label= "true" ];\n\t'
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];\n\t'
             self.sdg += ' [ label="then" ];'
             self.then_else = 0
         elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];\n\t'
             self.sdg += ' [ label="else" ];'
             self.then_else = 0
+        else: 
+            self.cfg += node + '\n\t'
+        self.cfg += node + '[shape=diamond];\n\t' + node + ' -> '
         i = 0
         while (i < len(tree.children[5].children)):
-            self.sdg += '\n\t' + node + ' -> ' 
+            self.sdg += '\n\t' + node + ' -> '
+            if i == 0: self.true = 1
             self.visit(tree.children[5].children[i])
             i += 1
         self.cfg += '\n\t' + node + ' -> '
@@ -275,27 +331,42 @@ class LPIS2_Interpreter(Interpreter):
         self.current = ""
         node = '"' + tree.children[0] + tree.children[1] + str(cond) + tree.children[3] + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += node + '\n\t' + node + '[shape=diamond];\n\t' + node + ' -> '
+        
         self.sdg += node
-        if self.then_else == 1:
+        if self.true == 1: 
+            self.cfg += node + '[ label= "true" ];\n\t'
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];\n\t'
             self.sdg += ' [ label="then" ];'
             self.then_else = 0
         elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];\n\t'
             self.sdg += ' [ label="else" ];'
             self.then_else = 0
+        else:
+            self.cfg += node + '\n\t'
+        self.cfg += node + '[shape=diamond];\n\t' + node + ' -> '
         i = 0
         while (i < len(tree.children[5].children)):
             self.sdg += '\n\t' + node + ' -> ' 
-            self.then_else = 1
+            if i == 0: self.then_else = 1
             self.visit(tree.children[5].children[i])
             i += 1
         self.cfg += '\n\t' + node + ' -> '
         i = 0
         while (i < len(tree.children[9].children)):
             self.sdg += '\n\t' + node + ' -> '
-            self.then_else = 2
+            if i == 0: self.then_else = 2
             self.visit(tree.children[9].children[i])
             i += 1
         self.replace = 1
@@ -309,9 +380,24 @@ class LPIS2_Interpreter(Interpreter):
         decl = '"' + tree.children[2].value + ' = ' + self.visit(tree.children[3]) + '"'
         inc = '"' + tree.children[7].value + ' = ' + self.visit(tree.children[8]) + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + decl + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + decl + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + decl + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + decl + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += decl + '\n\t' + decl + ' -> '
+        if self.true == 1:
+            self.cfg += decl + '[ label= "true" ];\n\t' + decl + ' -> '
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += decl + '[ label= "then" ];\n\t' + decl + ' -> '
+        elif self.then_else == 2:
+            self.cfg += decl + '[ label= "else" ];\n\t' + decl + ' -> '
+        else:
+            self.cfg += decl + '\n\t' + decl + ' -> '
         self.cfg += node + '\n\t' + node + '[shape=circle];\n\t' + node + ' -> '
         pre = re.search(r'".+" -> $',self.sdg)[0]
         self.sdg += decl
@@ -330,11 +416,12 @@ class LPIS2_Interpreter(Interpreter):
         i = 0
         while (i < len(tree.children[11].children)):
             self.sdg += '\n\t' + node + ' -> '
+            if i == 0: self.true = 1
             self.visit(tree.children[11].children[i])
             i += 1
         self.sdg += '\n\t' + node + ' -> ' + inc
         self.cfg = self.cfg.replace('-> \n','-> ' + inc + '\n')
-        self.cfg += inc + ' -> ' + node + '\n\t' + node + ' -> '
+        self.cfg += inc + '\n\t' + inc + ' -> ' + node + '\n\t' + node + ' -> '
 
     def instr_while(self,tree):
         self.visit(tree.children[2])
@@ -343,9 +430,25 @@ class LPIS2_Interpreter(Interpreter):
         self.current = ""
         node = '"' + tree.children[0] + tree.children[1] + str(cond) + tree.children[3] + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += node + '\n\t' + node + '[shape=circle];\n\t' + node + ' -> '
+        if self.true == 1:
+            self.cfg += node + '[ label= "true" ];'
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];'
+        elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];'
+        else:
+            self.cfg += node
+        self.cfg += '\n\t' + node + '[shape=circle];\n\t' + node + ' -> '
         self.sdg += node
         if self.then_else == 1:
             self.sdg += ' [ label="then" ];'
@@ -357,6 +460,7 @@ class LPIS2_Interpreter(Interpreter):
         i = 0
         while (i < len(tree.children[5].children)):
             self.sdg += '\n\t' + node + ' -> '
+            if i == 0: self.true = 1
             self.visit(tree.children[5].children[i])
             i += 1
         self.cfg += node + '\n\t' + node + ' -> '
@@ -364,9 +468,25 @@ class LPIS2_Interpreter(Interpreter):
     def instr_repeat(self,tree):
         node = '"' + tree.children[0] + '"'
         if self.replace:
-            self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
+            if self.true == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "true" ];\n')
+            elif self.then_else == 1:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "then" ];\n')
+            elif self.then_else == 2:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '[ label= "else" ];\n')
+            else:
+                self.cfg = self.cfg.replace('-> \n','-> ' + node + '\n')
             self.replace = 0
-        self.cfg += node + '\n\t' + node + '[shape=circle];\n\t' + node + ' -> '
+        if self.true == 1:
+            self.cfg += node + '[ label= "true" ];'
+            self.true = 0
+        elif self.then_else == 1:
+            self.cfg += node + '[ label= "then" ];'
+        elif self.then_else == 2:
+            self.cfg += node + '[ label= "else" ];'
+        else:
+            self.cfg += node
+        self.cfg += '\n\t' + node + '[shape=circle];\n\t' + node + ' -> '
         self.sdg += node
         if self.then_else == 1:
             self.sdg += ' [ label="then" ];'
@@ -382,7 +502,7 @@ class LPIS2_Interpreter(Interpreter):
             i += 1
         self.sdg += '\n\t' + node + ' -> '
         self.visit(tree.children[3])
-        self.cfg += node
+        self.cfg += node + '[ label= "true" ];'
 
 
     def until(self,tree):
@@ -391,7 +511,7 @@ class LPIS2_Interpreter(Interpreter):
         cond = cond.replace('"','\\"')
         self.current = ""
         node = '"' + tree.children[0] + tree.children[1] + str(cond) + tree.children[3] + '"'
-        self.cfg += node + '\n\t' + node + ' -> \n' + node + ' -> '
+        self.cfg += node + '\n\t' + node + ' -> \n\t' + node + ' -> '
         self.sdg += node
         self.replace = 1
 
