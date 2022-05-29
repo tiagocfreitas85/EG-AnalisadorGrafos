@@ -49,114 +49,96 @@
     <body>
         <h1>Código</h1>
         <pre><code><div class="code">int x = 2;</div>
-<div class="code">int y = 3;</div>
-<div class="code">int w;</div>
-<div class="code">int z = <div class="error">a<span class="errortext">variável 'a' inexistente</span></div>;</div>
-<div class="code">int g = <div class="error">w<span class="errortext">variável 'w' vazia</span></div>;</div>
+<div class="code">int y = 1;</div>
 <div class="code">boolean b = true;</div>
-<div class="code">boolean <div class="error">x<span class="errortext">variável 'x' já está declarada</span></div> = false;</div>
-<div class="code">boolean c = <div class="error">"true"<span class="errortext">"true" não é do tipo 'boolean'</span></div>;</div>
-<div class="code">string s = <div class="error">0<span class="errortext">'0' não é do tipo 'string'</span></div>;</div>
+<div class="code">string s = "ola";</div>
 <div class="code">list l = [1,2,3];</div>
-<div class="code">int u = <div class="error">l[5]<span class="errortext">'l' não possui esse índice</span></div>;</div>
-<div class="code">dict d = {"um": 1,"dois": 2};</div>
-<div class="code">tuple t = (4,5,6);</div>
 <div class="code">-----------------------</div>
-<div class="code"><div class="error">t[1]<span class="errortext">tuplos são imutáveis</span></div> = x;</div>
-<div class="code"><div class="error">x = b<span class="errortext">'x' e 'b' são de tipos diferentes</span></div>;</div>
-<div class="code">read(<div class="error">g<span class="errortext">variável 'g' inexistente</span></div>);</div>
-<div class="code">write(x);</div>
-<div class="code">for(i=0){</div>
+<div class="code">l[2] = x;</div>
+<div class="code">write(s);</div>
+<div class="code">for(i = 0;i < 5;i = i + 1){</div>
 <div class="code">	if(x == 1){</div>
-<div class="code">		<div class="error">h<span class="errortext">variável 'h' inexistente</span></div> = 1;</div>
+<div class="code">		b = false;</div>
 <div class="code">	}else{</div>
 <div class="code">		l[0] = 2;</div>
-<div class="code">		if(b){</div>
+<div class="code">		if(true){</div>
+<div class="code">			read(x);</div>
 <div class="code">			write(y);</div>
 <div class="code">		}</div>
 <div class="code">	}</div>
 <div class="code">}</div>
 <div class="code">while(1){</div>
 <div class="code">	y = y + 3;</div>
+<div class="code">	x = 7;</div>
 <div class="code">}</div>
 <div class="code">repeat{</div>
 <div class="code">	x = x - 1;</div>
-<div class="code">	until(false && (x > 0));</div>
+<div class="code">	until(false && (x < 0));</div>
 <div class="code">}</div>
 <div class="code">if(true){ //aninhado</div>
 <div class="code">	if(false){</div>
 <div class="code">		read(x);</div>
-<div class="code">		if(true){</div>
-<div class="code">			x = 3;</div>
+<div class="code">		if(z){</div>
+<div class="code">			x = 7;</div>
 <div class="code">		}</div>
 <div class="code">	}</div>
 <div class="code">}</div>
-<div class="code">if(x){ //aninhado</div>
-<div class="code">	if(y){</div>
-<div class="code">		x = 1;</div>
-<div class="code">	}</div>
-<div class="code">}</div>
 
-</code></pre>
-
-        <h1>Registos</h1><p>
-            <li>	int: {'x': '2', 'y': '3', 'w': None}</li>
-            <li>	boolean: {'b': 'true', 'x': 'false'}</li>
-            <li>	string: {}</li>
-            <li>	list: {'l': ['1', '2', '3']}</li>
-            <li>	tuple: {'t': ('4', '5', '6')}</li>
-            <li>	set: {}</li>
-            <li>	dict: {'d': {'"um"': '1', '"dois"': '2'}}</li></p>
-        <h1>Variáveis usadas</h1><p>
-        {'b', 'l[0]', 'y', 'x'}</p>
-        <h1>Intruções</h1><p>
-        {'atrib': 8, 'read': 2, 'write': 2, 'if': 6, 'if_else': 1, 'for': 1, 'while': 1, 'repeat': 1}</p>
-        <p><b>Total: </b>22</p>
-        <p><b>Total dentro de outras estruturas: </b>13</p>
+    </code></pre>
+    
+            <h1>Registos</h1><p>
+                <li>	int: {'x': '2', 'y': '1'}</li>
+                <li>	boolean: {'b': 'true'}</li>
+                <li>	string: {'s': '"ola"'}</li>
+                <li>	list: {'l': ['1', '2', '3']}</li>
+                <li>	tuple: {}</li>
+                <li>	set: {}</li>
+                <li>	dict: {}</li></p>
+            <h1>Variáveis usadas</h1><p>
+            {'y', 'b', 's', 'l[0]', 'x', 'l[2]'}</p>
+            <h1>Intruções</h1><p>
+            {'atrib': 7, 'read': 2, 'write': 2, 'if': 4, 'if_else': 1, 'for': 1, 'while': 1, 'repeat': 1}</p>
+            <p><b>Total: </b>19</p>
+            <p><b>Total dentro de outras estruturas: </b>13</p>
         <h1>Código (c/sugestões)</h1>
         <pre><code><div class="code">int x = 2;</div>
-<div class="code">int y = 3;</div>
-<div class="code">int w;</div>
-<div class="code">int z = a;</div>
-<div class="code">int g = w;</div>
+<div class="code">int y = 1;</div>
 <div class="code">boolean b = true;</div>
-<div class="code">boolean x = false;</div>
-<div class="code">boolean c = "true";</div>
-<div class="code">string s = 0;</div>
+<div class="code">string s = "ola";</div>
 <div class="code">list l = [1,2,3];</div>
-<div class="code">int u = l[5];</div>
-<div class="code">dict d = {"um": 1,"dois": 2};</div>
-<div class="code">tuple t = (4,5,6);</div>
 <div class="code">-----------------------</div>
-<div class="code">t[1] = x;</div>
-<div class="code">x = b;</div>
-<div class="code">read(g);</div>
-<div class="code">write(x);</div>
-<div class="code">for(i=0){</div>
+<div class="code">l[2] = x;</div>
+<div class="code">write(s);</div>
+<div class="code">for(i = 0;i < 5;i = i + 1){</div>
 <div class="code">	if(x == 1){</div>
-<div class="code">		h = 1;</div>
+<div class="code">		b = false;</div>
 <div class="code">	}else{</div>
 <div class="code">		l[0] = 2;</div>
-<div class="code">		if(b){</div>
+<div class="code">		if(true){</div>
+<div class="code">			read(x);</div>
 <div class="code">			write(y);</div>
 <div class="code">		}</div>
 <div class="code">	}</div>
 <div class="code">}</div>
 <div class="code">while(1){</div>
 <div class="code">	y = y + 3;</div>
+<div class="code">	x = 7;</div>
 <div class="code">}</div>
 <div class="code">repeat{</div>
 <div class="code">	x = x - 1;</div>
-<div class="code">	until(false && (x > 0));</div>
+<div class="code">	until(false && (x < 0));</div>
 <div class="code">}</div>
 <div class="code">if(true && false){</div>
 <div class="code">	read(x);</div>
-<div class="code">	if(true){</div>
-<div class="code">		x = 3;</div>
+<div class="code">	if(z){</div>
+<div class="code">		x = 7;</div>
 <div class="code">	}</div>
-<div class="code">}</div>
-<div class="code">if(x && y){</div>
-<div class="code">	x = 1;</div>
 <div class="code">}</div>
 
         </code></pre>
+<h1>CFG</h1>
+        <img src="images/cfg.png" alt="erro cfg">
+        <h1>SDG</h1>
+        <img src="images/sdg.png" alt="erro sdg">
+        <p>Da forma como proposto e contruído o grafo SDG, nunca ocorrerão casos/zonas de código inalcansável (grafos de ilha).</p>
+        <p>Complexidade de McCabe = 37 - 30 + 2 = 9

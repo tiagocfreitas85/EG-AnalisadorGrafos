@@ -1,0 +1,29 @@
+digraph G {
+	"entry main" -> "int x = 2"
+	"entry main" -> "int y = 1"
+	"entry main" -> "boolean b = true"
+	"entry main" -> "string s = \"ola\""
+	"entry main" -> "list l = [1,2,3]"
+	"entry main" -> "l[2] = x"
+	"entry main" -> "write(s)"
+	"entry main" -> "i = 0"
+	"entry main" -> "for(i < 5)"
+	"for(i < 5)" -> "if(x == 1)"
+	"if(x == 1)" -> "b = false" [ label="then" ];
+	"if(x == 1)" -> "l[0] = 2" [ label="else" ];
+	"if(x == 1)" -> "if(true)" [ label="else" ];
+	"if(true)" -> "read(x)"
+	"if(true)" -> "write(y)"
+	"for(i < 5)" -> "i = i + 1"
+	"entry main" -> "while(1)"
+	"while(1)" -> "y = y + 3"
+	"while(1)" -> "x = 7"
+	"entry main" -> "repeat"
+	"repeat" -> "x = x - 1"
+	"repeat" -> "until(false && (x < 0))"
+	"entry main" -> "if(true)'"
+	"if(true)'" -> "if(false)"
+	"if(false)" -> "read(x)'"
+	"if(false)" -> "if(z)"
+	"if(z)" -> "x = 7'"
+}

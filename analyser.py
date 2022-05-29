@@ -1,7 +1,7 @@
 from lark import Lark
 from lark.visitors import Interpreter
-from aux import *
-from sugestions import *
+from aux.verifiers import *
+from aux.sugestions import *
 
 class LPIS2_Interpreter(Interpreter): 
     def __init__(self):
@@ -503,24 +503,27 @@ class LPIS2_Interpreter(Interpreter):
         self.instrs['for'] += 1
         if self.level > 0:
             self.inside += 1
-        self.visit(tree.children[4])
-        var = self.current
+        
+        var = self.visit(tree.children[3])
+        self.visit(tree.children[5])
+        cond = self.current
         self.current = ""
+        inc = self.visit(tree.children[8])
         i = 0
         self.htmli += '<div class="code">'
         while i != self.level:
             self.htmli += '\t'
             i += 1
-        self.htmli += tree.children[0] + tree.children[1] + tree.children[2] + tree.children[3] + str(var) + tree.children[5] + tree.children[6] + '</div>\n'
+        self.htmli += tree.children[0] + tree.children[1] + tree.children[2] + ' = ' + str(var) + tree.children[4] + str(cond) + tree.children[6] + tree.children[7] + ' = ' + inc + tree.children[9] + tree.children[10] + '</div>\n'
         self.level += 1
-        self.visit_children(tree.children[7])
+        self.visit_children(tree.children[11])
         self.level -= 1
         i = 0
         self.htmli += '<div class="code">'
         while i != self.level:
             self.htmli += '\t'
             i += 1
-        self.htmli += tree.children[8] + '</div>\n'
+        self.htmli += tree.children[12] + '</div>\n'
 
     def instr_while(self,tree):
         self.instrs['while'] += 1
@@ -625,55 +628,49 @@ class LPIS2_Interpreter(Interpreter):
         else:
             var = tree.children[0].value
             self.current += var
-        
-grammar = open('lpis2.txt').read()
-code = open('test_code.txt').read()
-begin = open('html_begin.html').read()
 
-p = Lark(grammar)
-parse_tree = p.parse(code)
-data = LPIS2_Interpreter().visit(parse_tree)
-
-html = begin + data['html']
-html += '''
-</code></pre>
-'''
-
-
-for key in data:
-    if key == "regs":
-        print(key)
-        html += '''
-        <h1>Registos</h1><p>'''
-        for t in data[key]:
-            print ("\t" + t + ": " + str(data[key][t]))
+def analyzer(code):
+    grammar = open('lpis2.txt').read()
+    code = open(code).read()
+    begin = open('aux/html_begin.html').read()
+    p = Lark(grammar)
+    parse_tree = p.parse(code)
+    data = LPIS2_Interpreter().visit(parse_tree)
+    html = begin + data['html']
+    html += '''
+    </code></pre>
+    '''
+    for key in data:
+        if key == "regs":
+            print(key)
             html += '''
-            <li>\t''' + t + ": " + str(data[key][t]) + "</li>"
-        html += "</p>"
-    elif key == "instrs":
-        print(key + ": " + str(data[key]))
-        html += '''
-        <h1>Intruções</h1><p>
-        ''' 
-        html += str(data[key]) + "</p>"
-        total = sum(data[key].values())
-        html += '''
-        <p><b>Total: </b>''' + str(total) + '</p>'
-        print("total_instrs" + str(total))
-    elif key == "used":
-        print(key + ": " + str(data[key]))
-        html += '''
-        <h1>Variáveis usadas</h1><p>
-        ''' 
-        html += str(data[key]) + "</p>"
-    elif key == "inside":
-        print(key + ": " + str(data[key]))
-        html += '''
-        <p><b>Total dentro de outras estruturas: </b>''' + str(data[key]) + '</p>'
-
-f = open("page.html",'w',encoding = 'utf-8')
-
-html = add_suggestions(html)
-f.write(html)
-f.close()
-    
+            <h1>Registos</h1><p>'''
+            for t in data[key]:
+                print ("\t" + t + ": " + str(data[key][t]))
+                html += '''
+                <li>\t''' + t + ": " + str(data[key][t]) + "</li>"
+            html += "</p>"
+        elif key == "instrs":
+            print(key + ": " + str(data[key]))
+            html += '''
+            <h1>Intruções</h1><p>
+            ''' 
+            html += str(data[key]) + "</p>"
+            total = sum(data[key].values())
+            html += '''
+            <p><b>Total: </b>''' + str(total) + '</p>'
+            print("total_instrs: " + str(total))
+        elif key == "used":
+            print(key + ": " + str(data[key]))
+            html += '''
+            <h1>Variáveis usadas</h1><p>
+            ''' 
+            html += str(data[key]) + "</p>"
+        elif key == "inside":
+            print(key + ": " + str(data[key]))
+            html += '''
+            <p><b>Total dentro de outras estruturas: </b>''' + str(data[key]) + '</p>'
+    f = open("page.html",'w',encoding = 'utf-8')
+    html = add_suggestions(html)
+    f.write(html)
+    f.close()

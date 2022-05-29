@@ -40,7 +40,7 @@ instr_read : READ PE (ID|ELEM) PD PV
 instr_write : WRITE PE logic PD PV
 instr_if_else : IF PE logic PD CE instrs CD ELSE CE instrs CD
 instr_if : IF PE logic PD CE instrs CD
-instr_for : FOR PE (ID|ELEM) EQUAL logic PD CE instrs CD
+instr_for : FOR PE (ID|ELEM) decl_atrib PV logic PV (ID|ELEM) decl_atrib PD CE instrs CD 
 instr_while : WHILE PE logic PD CE instrs CD
 instr_repeat : REPEAT CE instrs until CD
 until : UNTIL PE logic PD PV

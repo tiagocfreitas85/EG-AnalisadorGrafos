@@ -5,15 +5,12 @@ import re
 def add_suggestions(html):
     soup = BeautifulSoup(html,"html.parser")
     res = []
-    print(soup)
     for d in soup.code:
         if '\n' not in d:
             for x in d.find_all("span", {"class": "errortext"}):
                 x.extract()
-            print(d)
             res.append(d.get_text())
     i = 0
-    #print(res)
     flag = 0
     while i < len(res):
         while 'aninhado' in res[i]:
@@ -21,7 +18,6 @@ def add_suggestions(html):
             res[i] = re.sub(r'\)\{ \/\/aninhado','',res[i])
             res[i] += res[i+1]
             pattern = re.findall(r'(\s+if\()',res[i]).pop()
-            #res[i] = re.sub(pattern,' && ',res[i])
             res[i] = res[i].replace(pattern,' && ')
             res.pop(i+1)
             j = i+1
@@ -29,8 +25,7 @@ def add_suggestions(html):
                 res[j] = res[j][1:]
                 j += 1
             res.pop(j)
-
-        #print(res[i])    
+   
         i += 1
 
     if flag == 1:

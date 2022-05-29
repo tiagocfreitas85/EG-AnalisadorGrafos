@@ -3,18 +3,17 @@ int y = 1;
 boolean b = true;
 string s = "ola";
 list l = [1,2,3];
-dict d = {"um": 1,"dois": 2};
 -----------------------
 l[2] = x;
-read(s);
-write(x);
+write(s);
 for(i = 0;i < 5; i = i + 1){
     if (x == 1){
         b = false;
     }
     else{
         l[0] = 2;
-        if(b){
+        if(true){
+            read(x);
             write(y);
         }
     }
@@ -26,19 +25,14 @@ while(1){
 
 repeat {
     x = x - 1;
-    until(false && (x > 0));
+    until(false && (x < 0));
 }
 
 if (true){
     if (false){
         read(x);
         if (z){
-            x = 3;
+            x = 7;
         }
-    }
-}
-if (x){
-    if(y){
-        x = 1;
     }
 }
